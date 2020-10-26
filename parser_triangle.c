@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:58:52 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/09 15:16:36 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/19 23:10:10 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int		pars_triangle_list(char *line, t_scene *scene)
 		line++;
 	scene->triangle->colour = pars_colour(&line, scene);
 	if (!scene->mistake)
-		return (write(2, "wrong triangle\n", 15));
+		return (write(2, "Error\nwrong triangle\n", 21));
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:49:09 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/09 15:20:23 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/19 23:07:30 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,10 @@ int			pars_camera_list(char *line, t_scene *scene)
 	while (line && *line == ' ')
 		line++;
 	if (!scene->mistake || !line || !ft_isdigit(*line))
-		return (write(2, "wrong camera\n", 13));
+		return (write(2, "Error\nwrong camera\n", 19));
 	scene->camera->fov = pars_one_colour(&line);
 	if (scene->camera->fov >= 180)
-		return (write(2, "wrong camera\n", 13));
+		return (write(2, "Error\nwrong camera\n", 19));
 	return (0);
 }
 

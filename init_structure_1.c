@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:33:19 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/09 15:08:24 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/21 21:28:14 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,25 @@ void		init_scene(t_scene *scene)
 	scene->mistake = 1;
 }
 
+t_mlx		init_mlx(void)
+{
+	// t_mlx	*mlx;
+	t_mlx	mlx;
+	// static int	count = 0;
+
+	// mlx = (t_mlx*)malloc(sizeof(t_mlx));
+	mlx.m_ptr = NULL;
+	mlx.w_ptr = NULL;
+	mlx.img = NULL;
+	mlx.addr = NULL;
+	mlx.bpp = 0;
+	mlx.length = 0;
+	mlx.end = 0;
+	// mlx->count = count++;
+	// mlx->next = NULL;
+	return (mlx);
+	
+}
 t_xyzpoint	init_center(void)
 {
 	t_xyzpoint center;

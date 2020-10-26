@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:54:31 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/09 15:22:28 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/19 23:08:21 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int		pars_plane_list(char *line, t_scene *scene)
 		line++;
 	scene->plane->colour = pars_colour(&line, scene);
 	if (!scene->mistake)
-		return (write(2, "wrong plane\n", 12));
+		return (write(2, "Error\nwrong plane\n", 18));
 	return (0);
 }
 
@@ -68,15 +68,15 @@ int		pars_cylin_list(char *line, t_scene *scene)
 	while (line && *line == ' ')
 		line++;
 	if (!line || !(ft_isdigit(*line)))
-		return (write(2, "wrong cylinde1\n", 15));
+		return (write(2, "Error\nwrong cylinder\n", 21));
 	scene->cylin->diametr = pars_double(0, &line);
 	while (line && *line == ' ')
 		line++;
 	if (!line || !(ft_isdigit(*line)))
-		return (write(2, "wrong cylinde2\n", 15));
+		return (write(2, "Error\nwrong cylinder\n", 21));
 	scene->cylin->lenght = pars_double(0, &line);
 	if (!scene->mistake)
-		return (write(2, "wrong cylinde3\n", 15));
+		return (write(2, "Error\nwrong cylinder\n", 21));
 	return (0);
 }
 

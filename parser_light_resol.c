@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:52:27 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/09 15:21:59 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/19 23:09:25 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,17 @@ int		pars_light_list(char *line, t_scene *scene)
 	while (line && *line == ' ')
 		line++;
 	if (!line || !(ft_isdigit(*line)))
-		return (write(2, "wrong light\n", 12));
+		return (write(2, "Error\nwrong light\n", 18));
 	scene->light->racio = pars_double(0, &line);
 	if ((scene->light->racio < 0 || scene->light->racio > 1))
-		return (write(2, "wrong light\n", 12));
+		return (write(2, "Error\nwrong light\n", 18));
 	while (line && *line == ' ')
 		line++;
 	if (!line || !(ft_isdigit(*line)))
-		return (write(2, "wrong light\n", 12));
+		return (write(2, "Error\nwrong light\n", 18));
 	scene->light->colour = pars_colour(&line, scene);
 	if (!scene->mistake)
-		return (write(2, "wrong light\n", 12));
+		return (write(2, "Error\nwrong light\n", 18));
 	return (0);
 }
 
@@ -65,17 +65,17 @@ int		pars_ambient(char *line, t_scene *scene)
 	while (line && *line == ' ')
 		line++;
 	if (!line || !(ft_isdigit(*line)))
-		return (write(1, "wrong ambient\n", 14));
+		return (write(1, "Error\nwrong ambient\n", 20));
 	scene->ambi.racio = pars_double(0, &line);
 	if ((scene->ambi.racio <= 0 || scene->ambi.racio > 1))
-		return (write(2, "wrong ambient\n", 14));
+		return (write(2, "Error\nwrong ambient\n", 20));
 	while (line && *line == ' ')
 		line++;
 	if (!line || !(ft_isdigit(*line)))
-		return (write(2, "wrong ambient\n", 14));
+		return (write(2, "Error\nwrong ambient\n", 20));
 	scene->ambi.colour = pars_colour(&line, scene);
 	if (!scene->mistake)
-		return (write(2, "wrong ambient\n", 14));
+		return (write(2, "Error\nwrong ambient\n", 20));
 	scene->ambi.count++;
 	return (0);
 }
@@ -100,7 +100,7 @@ int		pars_resol(char *line, t_scene *scene)
 	scene->resol.count++;
 	if (scene->resol.x_size <= 0 || scene->resol.y_size <= 0)
 	{
-		return (write(2, "wrong resolution\n", 17));
+		return (write(2, "Error\nwrong resolution\n", 23));
 		scene->mistake = 0;
 	}
 	return (0);

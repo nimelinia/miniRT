@@ -6,21 +6,21 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/08 11:16:11 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/17 02:35:13 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/21 16:51:31 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 #include "minilibx_mms/mlx.h"
 
-double		find_k_1_3(t_xyzpoint vect, t_scene *scene)
+double		find_k_1_3(t_xyzpoint vect, t_xyzpoint orient)
 {
 	t_xyzpoint	normal;
 	t_xyzpoint	temp_1;
 	t_xyzpoint	temp_2;
 	double		k;
 
-	normal = normalize_vector(scene->cylin->orient);
+	normal = normalize_vector(orient);
 	temp_1.x = normal.x * scalar(vect, normal);
 	temp_1.y = normal.y * scalar(vect, normal);
 	temp_1.z = normal.z * scalar(vect, normal);
@@ -29,7 +29,7 @@ double		find_k_1_3(t_xyzpoint vect, t_scene *scene)
 	return (k);
 }
 
-double		find_k_2(t_xyzpoint vect_1, t_xyzpoint vect_2, t_scene *scene)
+double		find_k_2(t_xyzpoint vect_1, t_xyzpoint vect_2, t_xyzpoint orient)
 {
 	t_xyzpoint	normal;
 	t_xyzpoint	temp_1;
@@ -37,7 +37,7 @@ double		find_k_2(t_xyzpoint vect_1, t_xyzpoint vect_2, t_scene *scene)
 	t_xyzpoint	temp_3;
 	t_xyzpoint	temp_4;
 
-	normal = normalize_vector(scene->cylin->orient);
+	normal = normalize_vector(orient);
 	temp_1.x = normal.x * scalar(vect_1, normal);
 	temp_1.y = normal.y * scalar(vect_1, normal);
 	temp_1.z = normal.z * scalar(vect_1, normal);

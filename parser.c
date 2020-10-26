@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:42:55 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/09 15:04:03 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/19 23:07:02 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ int			pars_line(char *line, t_scene *scene)
 	else if (*line == 'p' && line[1] == 'l')
 		return (pars_plane(line, scene));
 	else
-		return (write(2, "wronge scene\n", 13));
+		return (write(2, "Error\nwronge scene\n", 19));
 }
 
 void		parser(t_scene *scene, int fd)

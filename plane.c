@@ -6,63 +6,71 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/08 12:39:01 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/17 20:28:24 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/26 19:00:25 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 #include "minilibx_mms/mlx.h"
 
-void	draw_plane(t_scene *scene, void *mlx_ptr, void *win_ptr)
+void	draw_plane(t_scene *scene, t_mlx *mlx, int x, int i) // void *mlx_ptr, void *win_ptr)
 {
-	int		x;
 	int		y;
 	int		colour;
-	double	t[2];
+	// double	t[2];
+	t_index		pl;
+	t_plane		*tmp_pl;
 
-	x = 0;
 	y = 0;
-	t[1] = 2;
+	pl.ind_fig = 2;
+	pl.ind_fig_n = i;
+	pl.count = scene->plane->count;
+	tmp_pl = scene->plane;
+	while (i--)
+		tmp_pl = tmp_pl->next;
 	while (x < scene->resol.x_size)
 	{
 		while (y < scene->resol.y_size)
 		{
-			if ((t[0] = check_plane(scene, x, y)) && t[0] <= scene->points[x][y])
+			if ((pl.t = check_plane(scene, x, y, pl.ind_fig_n)) && pl.t <= scene->points[x][y])
 			{
-				colour = convert_colour_2(scene->plane->colour, \
-					find_colour_2(scene, x, y, t));
-				mlx_pixel_put(mlx_ptr, win_ptr, x, y, colour);
-				scene->points[x][y] = t[0];
+				pl.ind_l_n = 0;
+				colour = convert_colour(tmp_pl->colour, \
+					find_colour_2(scene, x, y, pl));
+				my_mlx_pixel_put(mlx, x, y, colour);
+				// mlx_pixel_put(mlx_ptr, win_ptr, x, y, colour);
+				scene->points[x][y] = pl.t;
 			}
 			y++;
 		}
-		x++;
+		x += 4;
 		y = 0;
 	}
 }
 
-double	check_plane(t_scene *scene, int x, int y)
+double	check_plane(t_scene *scene, int x, int y, int i)
 {
 	t_xyzpoint	canvas;
-	double		close_t;
 	double		d;
 	double		t;
 	t_xyzpoint	ray;
+	t_plane		*tmp_pl;
 
+	tmp_pl = scene->plane;
+	while (i--)
+		tmp_pl = tmp_pl->next;
 	canvas = find_center_canvas(scene, x, y);
-	close_t = 6000;
 	
-	scene->plane->orient = normalize_orient(scene->plane->center, scene->plane->orient, scene->camera->center);
-	d = -scalar(scene->plane->center, scene->plane->orient);
+	tmp_pl->orient = normalize_orient(tmp_pl->center, tmp_pl->orient, scene->camera->center);
+	d = -scalar(tmp_pl->center, tmp_pl->orient);
 	// ray = normalize_vector(substruct_vector(canvas, scene->camera->center));
 	ray = substruct_vector(canvas, scene->camera->center);
-	t = -(d + scalar(scene->plane->orient, scene->camera->center)) / \
-		scalar(scene->plane->orient, ray);
-	if (t >= 1 && t < close_t)
-		close_t = t;
+	t = -(d + scalar(tmp_pl->orient, scene->camera->center)) / \
+		scalar(tmp_pl->orient, ray);
+	if (t >= 1 && t < 6000)
+		return (t);
 	else
 		return (0);
-	return (close_t);
 }
 // написать функцию, которая делает нормаль противоположной направлению камеры, если перпендикулярно
 // то тогда справа налево
