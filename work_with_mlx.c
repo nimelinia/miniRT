@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/13 21:14:12 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/26 20:59:46 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/27 12:22:43 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 void	start_work(t_scene *scene)
 {
+	// t_scene		copy_scene;
 	// t_mlx	mlx;
 	// void	*mlx_ptr;
 	// void	*win_ptr;
@@ -44,30 +45,33 @@ void	start_work(t_scene *scene)
 	g_mlx.addr = mlx_get_data_addr(g_mlx.img, &g_mlx.bpp, &g_mlx.length, &g_mlx.end);
 	g_scene = scene;
 	g_camera = scene->camera;
-	copy_struct(g_scene);
-	check_cam(g_scene_copy);
-	prerender(g_scene_copy, &g_mlx);
-	// очистка g_scene_copy
+	prerender(scene, &g_mlx);
 	// g_mlx = mlx;
 	
-	// g_scene = scene;
-	// render(scene, mlx);
-	// render(scene, mlx_ptr, win_ptr);
 	if (g_mlx.w_ptr)
 	{
 		mlx_put_image_to_window(g_mlx.m_ptr, g_mlx.w_ptr, g_mlx.img, 0, 0);
 		mlx_hook(g_mlx.w_ptr, 17, 1L << 17, free_struct, scene);
 		mlx_hook(g_mlx.w_ptr, 2, 1L << 0, key_pressed, scene);
 	}
+	// else
+	// 	put_image_bmp(scene);
 	
 	// else
 		// сохранение в bmp	и очистка
-	mlx_loop(g_mlx.m_ptr);
+	mlx_loop(g_mlx.m_ptr); // перенести в иф
 	
 }
 
+void	put_image_bmp(t_scene *scene)
+{
+	(void)scene;
+}
+
+
 int		key_pressed(int	keycode, t_scene *scene)
 {
+	
 	if (keycode == 53)
 		return(free_struct(scene));
 	if (keycode == 8)
@@ -83,10 +87,7 @@ int		key_pressed(int	keycode, t_scene *scene)
 		// mlx_clear_window(g_mlx.m_ptr, g_mlx.w_ptr);
 		g_mlx.img = mlx_new_image(g_mlx.m_ptr, scene->resol.x_size, scene->resol.y_size);
 		g_mlx.addr = mlx_get_data_addr(g_mlx.img, &g_mlx.bpp, &g_mlx.length, &g_mlx.end);
-		copy_struct(g_scene);
-		check_cam(g_scene_copy);
-		prerender(g_scene_copy, &g_mlx);
-		//очистить g_scene_copy
+		prerender(scene, &g_mlx);
 		mlx_put_image_to_window(g_mlx.m_ptr, g_mlx.w_ptr, g_mlx.img, 0, 0);
 	}
 	return (0);
@@ -111,107 +112,6 @@ void		free_points(t_scene *scene)
 	}
 }
 
-void	check_cam(t_scene *scene)
-{
-	scene->camera->orient = normalize_vector(scene->camera->orient);
-	if (scene->camera->center.x != 0 || scene->camera->center.y != 0 || 
-		scene->camera->center.z != 0 || scene->camera->orient.x != 0 || 
-		scene->camera->orient.y != 0 || scene->camera->orient.z != 1)
-		change_coordinates_all(scene, rotate_matrix(scene));
-}
-
-void	change_coordinates_all(t_scene *scene, t_matrix matrix)
-{
-	change_light_coor(scene, matrix);
-	change_sphere_coor(scene, matrix);
-	change_plane_coor(scene, matrix);
-	change_triangle_coor(scene, matrix);
-	change_square_coor(scene, matrix);
-	change_cylin_coor(scene, matrix);
-}
-
-void	change_light_coor(t_scene *scene, t_matrix matrix)
-{
-	t_light	*tmp_l;
-
-	tmp_l = scene->light;
-	while(scene->light)
-	{
-		scene->light->center = mult_point_matrix(scene->light->center, matrix);
-		scene->light = scene->light->next;
-	}
-	scene->light = tmp_l;
-}
-
-void	change_sphere_coor(t_scene *scene, t_matrix matrix)
-{
-	t_sphere	*tmp_sp;
-
-	tmp_sp = scene->sphere;
-	while(scene->sphere)
-	{
-		scene->sphere->center = mult_point_matrix(scene->sphere->center, matrix);
-		scene->sphere = scene->sphere->next;
-	}
-	scene->sphere = tmp_sp;
-}
-
-void	change_plane_coor(t_scene *scene, t_matrix matrix)
-{
-	t_plane	*tmp_pl;
-
-	tmp_pl = scene->plane;
-	while(scene->plane)
-	{
-		scene->plane->center = mult_point_matrix(scene->plane->center, matrix);
-		scene->plane->orient = mult_point_matrix(scene->plane->orient, matrix);
-		scene->plane = scene->plane->next;
-	}
-	scene->plane = tmp_pl;
-}
-
-void	change_triangle_coor(t_scene *scene, t_matrix matrix)
-{
-	t_triangle	*tmp_tr;
-
-	tmp_tr = scene->triangle;
-	while(scene->triangle)
-	{
-		scene->triangle->angle_one = mult_point_matrix(scene->triangle->angle_one, matrix);
-		scene->triangle->angle_two = mult_point_matrix(scene->triangle->angle_two, matrix);
-		scene->triangle->angle_three = mult_point_matrix(scene->triangle->angle_three, matrix);
-		scene->triangle = scene->triangle->next;
-	}	
-	scene->triangle = tmp_tr;
-}
-
-void change_square_coor(t_scene *scene, t_matrix matrix)
-{
-	t_square	*tmp_sq;
-
-	tmp_sq = scene->square;
-	while(scene->square)
-	{
-		scene->square->center = mult_point_matrix(scene->square->center, matrix);
-		scene->square->orient = mult_point_matrix(scene->square->orient, matrix);
-		scene->square = scene->square->next;
-	}
-	scene->square = tmp_sq;
-}
-
-void	change_cylin_coor(t_scene *scene, t_matrix matrix)
-{
-	t_cylin	*tmp_cy;
-
-	tmp_cy = scene->cylin;
-	while(scene->cylin)
-	{
-		scene->cylin->center = mult_point_matrix(scene->cylin->center, matrix);
-		scene->cylin->orient = mult_point_matrix(scene->cylin->orient, matrix);
-		scene->cylin = scene->cylin->next;
-	}
-	scene->cylin = tmp_cy;
-}
 
 t_xyzpoint	mult_point_matrix(t_xyzpoint point, t_matrix matrix)
 {
@@ -223,184 +123,6 @@ t_xyzpoint	mult_point_matrix(t_xyzpoint point, t_matrix matrix)
 	return (result);
 }
 
-void		copy_struct(t_scene *orig_scene)
-{
-	t_scene		scene_cp;
-
-	init_scene(&scene_cp);
-	scene_cp.ambi = orig_scene->ambi;
-	scene_cp.resol = orig_scene->resol;
-	copy_camera(orig_scene, &scene_cp);
-	copy_light(orig_scene, &scene_cp);
-	copy_sphere(orig_scene, &scene_cp);
-	copy_plane(orig_scene, &scene_cp);
-	copy_triangle(orig_scene, &scene_cp);
-	copy_square(orig_scene, &scene_cp);
-	copy_cylin(orig_scene, &scene_cp);
-	t_init_points(&scene_cp);
-	g_scene_copy = &scene_cp;
-}
-
-void	copy_camera(t_scene *orig_scene, t_scene *scene_cp) // тут спецом копируется только одна камера
-{	
-	scene_cp->camera->center = orig_scene->camera->center;
-	scene_cp->camera->fov = orig_scene->camera->fov;
-	scene_cp->camera->orient = orig_scene->camera->orient;
-}
-
-void	copy_light(t_scene *orig_scene, t_scene *scene_cp)
-{
-	t_light *tmp_l;
-	t_light	*new;
-	int		i;
-
-	i = 1;
-	tmp_l = orig_scene->light;
-	while (orig_scene->light)
-	{
-		scene_cp->light->racio = orig_scene->light->racio;
-		scene_cp->light->center = orig_scene->light->center;
-		scene_cp->light->colour = orig_scene->light->colour;
-		scene_cp->light->count = i++;
-		orig_scene->light = orig_scene->light->next;
-		if (orig_scene->light)
-		{
-			new = l_init();
-			new->next = scene_cp->light;
-			scene_cp->light = new;
-		}
-	}
-	orig_scene->light = tmp_l;
-}
-
-void	copy_sphere(t_scene *orig_scene, t_scene *scene_cp)
-{
-	t_sphere	*tmp_sp;
-	t_sphere	*new;
-	int			i;
-
-	i = 1;
-	tmp_sp = orig_scene->sphere;
-	while (orig_scene->sphere)
-	{
-		scene_cp->sphere->center = orig_scene->sphere->center;
-		scene_cp->sphere->colour = orig_scene->sphere->colour;
-		scene_cp->sphere->diametr = orig_scene->sphere->diametr;
-		scene_cp->sphere->count = i++;
-		orig_scene->sphere = orig_scene->sphere->next;
-		if (orig_scene->sphere)
-		{
-			new = sp_init();
-			new->next = scene_cp->sphere;
-			scene_cp->sphere = new;
-		}
-	}
-	orig_scene->sphere = tmp_sp;
-}
-
-void	copy_plane(t_scene *orig_scene, t_scene *scene_cp)
-{
-	t_plane		*tmp_pl;
-	t_plane		*new;
-	int			i;
-
-	tmp_pl = orig_scene->plane;
-	i = 1;
-	while (orig_scene->plane)
-	{
-		scene_cp->plane->center = orig_scene->plane->center;
-		scene_cp->plane->colour = orig_scene->plane->colour;
-		scene_cp->plane->orient = orig_scene->plane->orient;
-		scene_cp->plane->count = i++;
-		orig_scene->plane = orig_scene->plane->next;
-		if (orig_scene->plane)
-		{
-			new = p_init();
-			new->next = scene_cp->plane;
-			scene_cp->plane = new;
-		}
-	}
-	orig_scene->plane = tmp_pl;
-}
-
-void	copy_triangle(t_scene *orig_scene, t_scene *scene_cp)
-{
-	t_triangle	*tmp_tr;
-	t_triangle	*new;
-	int			i;
-
-	i = 1;
-	tmp_tr = orig_scene->triangle;
-	while (orig_scene->triangle)
-	{
-		scene_cp->triangle->angle_one = orig_scene->triangle->angle_one;
-		scene_cp->triangle->angle_two = orig_scene->triangle->angle_two;
-		scene_cp->triangle->angle_three = orig_scene->triangle->angle_three;
-		scene_cp->triangle->colour = orig_scene->triangle->colour;
-		scene_cp->triangle->count = i++;
-		orig_scene->triangle = orig_scene->triangle->next;
-		if (orig_scene->triangle)
-		{
-			new = t_init();
-			new->next = scene_cp->triangle;
-			scene_cp->triangle = new;
-		}
-	}
-	orig_scene->triangle = tmp_tr;
-}
-
-void	copy_square(t_scene *orig_scene, t_scene *scene_cp)
-{
-	t_square	*tmp_sq;
-	t_square	*new;
-	int			i;
-
-	i = 1;
-	tmp_sq = orig_scene->square;
-	while (orig_scene->square)
-	{
-		scene_cp->square->center = orig_scene->square->center;
-		scene_cp->square->colour = orig_scene->square->colour;
-		scene_cp->square->lenght = orig_scene->square->lenght;
-		scene_cp->square->orient = orig_scene->square->orient;
-		scene_cp->square->count = i++;
-		orig_scene->square = orig_scene->square->next;
-		if (orig_scene->square)
-		{
-			new = sq_init();
-			new->next = scene_cp->square;
-			scene_cp->square = new;
-		}
-	}
-	orig_scene->square = tmp_sq;
-}
-
-void	copy_cylin(t_scene *orig_scene, t_scene *scene_cp)
-{
-	t_cylin		*tmp_cy;
-	t_cylin		*new;
-	int			i;
-
-	i = 1;
-	tmp_cy = orig_scene->cylin;
-	while (orig_scene->cylin)
-	{
-		scene_cp->cylin->center = orig_scene->cylin->center;
-		scene_cp->cylin->colour = orig_scene->cylin->colour;
-		scene_cp->cylin->diametr = orig_scene->cylin->diametr;
-		scene_cp->cylin->lenght = orig_scene->cylin->lenght;
-		scene_cp->cylin->orient = orig_scene->cylin->orient;
-		scene_cp->cylin->count = i++;
-		orig_scene->cylin = orig_scene->cylin->next;
-		if (orig_scene->cylin)
-		{
-			new = cy_init();
-			new->next = scene_cp->cylin;
-			scene_cp->cylin = new;
-		}
-	}
-	orig_scene->cylin = tmp_cy;
-}
 
 void		my_mlx_pixel_put(t_mlx *mlx, int x, int y, int colour)
 {
@@ -441,52 +163,62 @@ t_xyzpoint		mult_num_vect(t_xyzpoint vector, double num)
 	return (result);
 }
 
+t_xyzpoint	vector_div(t_xyzpoint vect, double num)
+{
+	t_xyzpoint	res;
 
+	res.x = vect.x / num;
+	res.y = vect.y / num;
+	res.z = vect.z / num;
+	return (res);
+}
+
+
+t_xyzpoint		sum_vect(t_xyzpoint vect_1, t_xyzpoint vect_2)
+{
+	t_xyzpoint	sum;
+
+	sum.x = vect_1.x + vect_2.x;
+	sum.y = vect_1.y + vect_2.y;
+	sum.z = vect_1.z + vect_2.z;
+	return (sum);
+}
 
 t_xyzpoint	find_center_canvas(t_scene *scene, int x, int y)
 {
-	t_xyzpoint	fin_coord;
+	t_xyzpoint	coord_x;
+	t_xyzpoint	coord_y;
 	double		weight;
 	double		hight;
+	double		d;
 	// t_xyzpoint	new_camera;
 
 	// new_camera = rotate_matrix(scene);
-	weight = find_weight_screen(scene);
-	hight = weight * scene->resol.y_size / scene->resol.x_size;
-	fin_coord.x = (scene->camera->center.x + scene->camera->orient.x + x - scene->resol.x_size / 2) * weight / scene->resol.x_size;
-	fin_coord.y = (scene->camera->center.y + scene->camera->orient.y + y - scene->resol.y_size / 2) * hight / scene->resol.y_size;
-	fin_coord.z = scene->camera->center.z + scene->camera->orient.z;
-	return (fin_coord);
-}
-
-t_matrix	rotate_matrix(t_scene *scene)
-{
-	double		angle_one;
-	double		angle_sec;
-	t_matrix	rot_matr;
-
-	angle_one = acos(scene->camera->orient.z);
-	angle_sec = asin(scene->camera->orient.y);
-	rot_matr.str_1.x = cos(angle_one);
-	rot_matr.str_1.y = sin(angle_one) * sin(angle_sec);
-	rot_matr.str_1.z = sin(angle_one) * cos(angle_sec);
-	rot_matr.str_2.x = 0;
-	rot_matr.str_2.y = cos(angle_sec);
-	rot_matr.str_2.z = - sin(angle_sec);
-	rot_matr.str_3.x = - sin(angle_one);
-	rot_matr.str_3.y = cos(angle_one) * sin(angle_sec);
-	rot_matr.str_3.z = cos(angle_one) * cos(angle_sec);
-	return (rot_matr);
+	weight = find_weight_screen(scene); // половина ширины экрана
+	hight = weight * (double)scene->resol.y_size / (double)scene->resol.x_size;
+	d = weight * (1. - 2. * (double)x / (double)scene->resol.x_size);
+	coord_x = mult_num_vect(scene->camera->ox, d); 
+	d = hight * (1. - 2. * (double)y / (double)scene->resol.y_size);
+	coord_y = mult_num_vect(scene->camera->oy, d);
+	// fin_coord.x = (x - scene->resol.x_size / 2) * weight / scene->resol.x_size;
+	// fin_coord.y = (y - scene->resol.y_size / 2) * hight / scene->resol.y_size;
+	// fin_coord.x = (scene->camera->center.x + scene->camera->orient.x + x - scene->resol.x_size / 2) * weight / scene->resol.x_size;
+	// // fin_coord.y = (scene->camera->center.y + scene->camera->orient.y - y + scene->resol.y_size / 2) * hight / scene->resol.y_size;
+	// fin_coord.y = (scene->camera->center.y + scene->camera->orient.y + y - scene->resol.y_size / 2) * hight / scene->resol.y_size;
+	// fin_coord.z = scene->camera->center.z + 1; // + scene->camera->orient.z;
+	return (sum_vect(sum_vect(coord_x, coord_y), scene->camera->orient));
 }
 
 double	find_weight_screen(t_scene *scene)
 {
-	double	a;
+	// double	a;
 	double	b;
 	
-	a = length_vector(scene->camera->orient);
-	b = a * tan(scene->camera->fov * M_PI/ 360);
-	return (b * 2);
+	// a = length_vector(scene->camera->orient);
+	// b = a * tan(scene->camera->fov * M_PI/ 360);
+	b = tan(scene->camera->fov * M_PI/ 360.); // вектор камеры уже нормализован и равен 1
+	// return (b * 2);
+	return (b);
 }
 
 int		free_struct(t_scene *scene) // дописать очистку
@@ -496,8 +228,321 @@ int		free_struct(t_scene *scene) // дописать очистку
 	exit (0);
 }
 
+//////////////////////////////////////////////////
+
+// void	check_cam(t_scene *scene)
+// {
+// 	scene->camera->orient = normalize_vector(scene->camera->orient);
+// 	if (scene->camera->center.x != 0 || scene->camera->center.y != 0 || 
+// 		scene->camera->center.z != 0 || scene->camera->orient.x != 0 || 
+// 		scene->camera->orient.y != 0 || scene->camera->orient.z != 1)
+// 		change_coordinates_all(scene, rotate_matrix(scene));
+// }
+
+// void	change_coordinates_all(t_scene *scene, t_matrix matrix)
+// {
+// 	change_light_coor(scene, matrix);
+// 	change_sphere_coor(scene, matrix);
+// 	change_plane_coor(scene, matrix);
+// 	change_triangle_coor(scene, matrix);
+// 	change_square_coor(scene, matrix);
+// 	change_cylin_coor(scene, matrix);
+// }
+
+// void	change_light_coor(t_scene *scene, t_matrix matrix)
+// {
+// 	t_light	*tmp_l;
+
+// 	tmp_l = scene->light;
+// 	while(scene->light)
+// 	{
+// 		scene->light->center = mult_point_matrix(scene->light->center, matrix);
+// 		scene->light = scene->light->next;
+// 	}
+// 	scene->light = tmp_l;
+// }
+
+// void	change_sphere_coor(t_scene *scene, t_matrix matrix)
+// {
+// 	t_sphere	*tmp_sp;
+
+// 	tmp_sp = scene->sphere;
+// 	while(scene->sphere)
+// 	{
+// 		scene->sphere->center = mult_point_matrix(scene->sphere->center, matrix);
+// 		scene->sphere = scene->sphere->next;
+// 	}
+// 	scene->sphere = tmp_sp;
+// }
+
+// void	change_plane_coor(t_scene *scene, t_matrix matrix)
+// {
+// 	t_plane	*tmp_pl;
+
+// 	tmp_pl = scene->plane;
+// 	while(scene->plane)
+// 	{
+// 		scene->plane->center = mult_point_matrix(scene->plane->center, matrix);
+// 		scene->plane->orient = mult_point_matrix(scene->plane->orient, matrix);
+// 		scene->plane = scene->plane->next;
+// 	}
+// 	scene->plane = tmp_pl;
+// }
+
+// void	change_triangle_coor(t_scene *scene, t_matrix matrix)
+// {
+// 	t_triangle	*tmp_tr;
+
+// 	tmp_tr = scene->triangle;
+// 	while(scene->triangle)
+// 	{
+// 		scene->triangle->angle_one = mult_point_matrix(scene->triangle->angle_one, matrix);
+// 		scene->triangle->angle_two = mult_point_matrix(scene->triangle->angle_two, matrix);
+// 		scene->triangle->angle_three = mult_point_matrix(scene->triangle->angle_three, matrix);
+// 		scene->triangle = scene->triangle->next;
+// 	}	
+// 	scene->triangle = tmp_tr;
+// }
+
+// void change_square_coor(t_scene *scene, t_matrix matrix)
+// {
+// 	t_square	*tmp_sq;
+
+// 	tmp_sq = scene->square;
+// 	while(scene->square)
+// 	{
+// 		scene->square->center = mult_point_matrix(scene->square->center, matrix);
+// 		scene->square->orient = mult_point_matrix(scene->square->orient, matrix);
+// 		scene->square = scene->square->next;
+// 	}
+// 	scene->square = tmp_sq;
+// }
+
+// void	change_cylin_coor(t_scene *scene, t_matrix matrix)
+// {
+// 	t_cylin	*tmp_cy;
+
+// 	tmp_cy = scene->cylin;
+// 	while(scene->cylin)
+// 	{
+// 		scene->cylin->center = mult_point_matrix(scene->cylin->center, matrix);
+// 		scene->cylin->orient = mult_point_matrix(scene->cylin->orient, matrix);
+// 		scene->cylin = scene->cylin->next;
+// 	}
+// 	scene->cylin = tmp_cy;
+// }
+
+// t_matrix	rotate_matrix(t_scene *scene)
+// {
+// 	double		angle_one;
+// 	double		angle_sec;
+// 	t_matrix	rot_matr;
+
+// 	angle_one = acos(scene->camera->orient.z);
+// 	angle_sec = asin(scene->camera->orient.y);
+// 	rot_matr.str_1.x = cos(angle_one);
+// 	rot_matr.str_1.y = sin(angle_one) * sin(angle_sec);
+// 	rot_matr.str_1.z = sin(angle_one) * cos(angle_sec);
+// 	rot_matr.str_2.x = 0;
+// 	rot_matr.str_2.y = cos(angle_sec);
+// 	rot_matr.str_2.z = - sin(angle_sec);
+// 	rot_matr.str_3.x = - sin(angle_one);
+// 	rot_matr.str_3.y = cos(angle_one) * sin(angle_sec);
+// 	rot_matr.str_3.z = cos(angle_one) * cos(angle_sec);
+// 	return (rot_matr);
+// }
 
 
+// void		copy_struct(t_scene *copy_scene, t_scene *orig_scene)
+// {
+// 	// t_scene		scene_cp;
+
+
+// 	init_scene(copy_scene);
+// 	copy_scene->ambi = orig_scene->ambi;
+// 	copy_scene->resol = orig_scene->resol;
+// 	copy_camera(orig_scene, copy_scene);
+// 	copy_light(orig_scene, copy_scene);
+// 	copy_sphere(orig_scene, copy_scene);
+// 	copy_plane(orig_scene, copy_scene);
+// 	copy_triangle(orig_scene, copy_scene);
+// 	copy_square(orig_scene, copy_scene);
+// 	copy_cylin(orig_scene, copy_scene);
+// 	t_init_points(copy_scene);
+// 	// init_scene(&scene_cp);
+// 	// scene_cp.ambi = orig_scene->ambi;
+// 	// scene_cp.resol = orig_scene->resol;
+// 	// copy_camera(orig_scene, &scene_cp);
+// 	// copy_light(orig_scene, &scene_cp);
+// 	// copy_sphere(orig_scene, &scene_cp);
+// 	// copy_plane(orig_scene, &scene_cp);
+// 	// copy_triangle(orig_scene, &scene_cp);
+// 	// copy_square(orig_scene, &scene_cp);
+// 	// copy_cylin(orig_scene, &scene_cp);
+// 	// t_init_points(&scene_cp);
+// 	// g_scene_copy = &scene_cp;
+// }
+
+// void	copy_camera(t_scene *orig_scene, t_scene *scene_cp) // тут спецом копируется только одна камера
+// {	
+// 	scene_cp->camera->center = orig_scene->camera->center;
+// 	scene_cp->camera->fov = orig_scene->camera->fov;
+// 	scene_cp->camera->orient = orig_scene->camera->orient;
+// }
+
+// void	copy_light(t_scene *orig_scene, t_scene *scene_cp)
+// {
+// 	t_light *tmp_l;
+// 	t_light	*new;
+// 	int		i;
+
+// 	i = 1;
+// 	tmp_l = orig_scene->light;
+// 	while (orig_scene->light)
+// 	{
+// 		scene_cp->light->racio = orig_scene->light->racio;
+// 		scene_cp->light->center = orig_scene->light->center;
+// 		scene_cp->light->colour = orig_scene->light->colour;
+// 		scene_cp->light->count = i++;
+// 		orig_scene->light = orig_scene->light->next;
+// 		if (orig_scene->light)
+// 		{
+// 			new = l_init();
+// 			new->next = scene_cp->light;
+// 			scene_cp->light = new;
+// 		}
+// 	}
+// 	orig_scene->light = tmp_l;
+// }
+
+// void	copy_sphere(t_scene *orig_scene, t_scene *scene_cp)
+// {
+// 	t_sphere	*tmp_sp;
+// 	t_sphere	*new;
+// 	int			i;
+
+// 	i = 1;
+// 	tmp_sp = orig_scene->sphere;
+// 	while (orig_scene->sphere)
+// 	{
+// 		scene_cp->sphere->center = orig_scene->sphere->center;
+// 		scene_cp->sphere->colour = orig_scene->sphere->colour;
+// 		scene_cp->sphere->diametr = orig_scene->sphere->diametr;
+// 		scene_cp->sphere->count = i++;
+// 		orig_scene->sphere = orig_scene->sphere->next;
+// 		if (orig_scene->sphere)
+// 		{
+// 			new = sp_init();
+// 			new->next = scene_cp->sphere;
+// 			scene_cp->sphere = new;
+// 		}
+// 	}
+// 	orig_scene->sphere = tmp_sp;
+// }
+
+// void	copy_plane(t_scene *orig_scene, t_scene *scene_cp)
+// {
+// 	t_plane		*tmp_pl;
+// 	t_plane		*new;
+// 	int			i;
+
+// 	tmp_pl = orig_scene->plane;
+// 	i = 1;
+// 	while (orig_scene->plane)
+// 	{
+// 		scene_cp->plane->center = orig_scene->plane->center;
+// 		scene_cp->plane->colour = orig_scene->plane->colour;
+// 		scene_cp->plane->orient = orig_scene->plane->orient;
+// 		scene_cp->plane->count = i++;
+// 		orig_scene->plane = orig_scene->plane->next;
+// 		if (orig_scene->plane)
+// 		{
+// 			new = p_init();
+// 			new->next = scene_cp->plane;
+// 			scene_cp->plane = new;
+// 		}
+// 	}
+// 	orig_scene->plane = tmp_pl;
+// }
+
+// void	copy_triangle(t_scene *orig_scene, t_scene *scene_cp)
+// {
+// 	t_triangle	*tmp_tr;
+// 	t_triangle	*new;
+// 	int			i;
+
+// 	i = 1;
+// 	tmp_tr = orig_scene->triangle;
+// 	while (orig_scene->triangle)
+// 	{
+// 		scene_cp->triangle->angle_one = orig_scene->triangle->angle_one;
+// 		scene_cp->triangle->angle_two = orig_scene->triangle->angle_two;
+// 		scene_cp->triangle->angle_three = orig_scene->triangle->angle_three;
+// 		scene_cp->triangle->colour = orig_scene->triangle->colour;
+// 		scene_cp->triangle->count = i++;
+// 		orig_scene->triangle = orig_scene->triangle->next;
+// 		if (orig_scene->triangle)
+// 		{
+// 			new = t_init();
+// 			new->next = scene_cp->triangle;
+// 			scene_cp->triangle = new;
+// 		}
+// 	}
+// 	orig_scene->triangle = tmp_tr;
+// }
+
+// void	copy_square(t_scene *orig_scene, t_scene *scene_cp)
+// {
+// 	t_square	*tmp_sq;
+// 	t_square	*new;
+// 	int			i;
+
+// 	i = 1;
+// 	tmp_sq = orig_scene->square;
+// 	while (orig_scene->square)
+// 	{
+// 		scene_cp->square->center = orig_scene->square->center;
+// 		scene_cp->square->colour = orig_scene->square->colour;
+// 		scene_cp->square->lenght = orig_scene->square->lenght;
+// 		scene_cp->square->orient = orig_scene->square->orient;
+// 		scene_cp->square->count = i++;
+// 		orig_scene->square = orig_scene->square->next;
+// 		if (orig_scene->square)
+// 		{
+// 			new = sq_init();
+// 			new->next = scene_cp->square;
+// 			scene_cp->square = new;
+// 		}
+// 	}
+// 	orig_scene->square = tmp_sq;
+// }
+
+// void	copy_cylin(t_scene *orig_scene, t_scene *scene_cp)
+// {
+// 	t_cylin		*tmp_cy;
+// 	t_cylin		*new;
+// 	int			i;
+
+// 	i = 1;
+// 	tmp_cy = orig_scene->cylin;
+// 	while (orig_scene->cylin)
+// 	{
+// 		scene_cp->cylin->center = orig_scene->cylin->center;
+// 		scene_cp->cylin->colour = orig_scene->cylin->colour;
+// 		scene_cp->cylin->diametr = orig_scene->cylin->diametr;
+// 		scene_cp->cylin->lenght = orig_scene->cylin->lenght;
+// 		scene_cp->cylin->orient = orig_scene->cylin->orient;
+// 		scene_cp->cylin->count = i++;
+// 		orig_scene->cylin = orig_scene->cylin->next;
+// 		if (orig_scene->cylin)
+// 		{
+// 			new = cy_init();
+// 			new->next = scene_cp->cylin;
+// 			scene_cp->cylin = new;
+// 		}
+// 	}
+// 	orig_scene->cylin = tmp_cy;
+// }
 // double	check_light_2(t_scene *scene, int x, int y, t_index fig)
 // {
 // 	t_xyzpoint	point;

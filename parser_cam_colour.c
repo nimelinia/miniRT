@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:49:09 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/19 23:07:30 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/27 10:57:06 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,16 @@ t_colour	pars_colour(char **line, t_scene *scene)
 
 int			pars_camera_list(char *line, t_scene *scene)
 {
+	t_xyzpoint	vect;
+	
 	line++;
 	while (line && *line == ' ')
 		line++;
 	scene->camera->center = pars_center(&line, scene);
 	while (line && *line == ' ')
 		line++;
-	scene->camera->orient = pars_orient(&line, scene);
+	scene->camera->orient = pars_orient(&line, scene); // объединить со следующей строкой
+	scene->camera->orient = normalize_vector(scene->camera->orient);
 	while (line && *line == ' ')
 		line++;
 	if (!scene->mistake || !line || !ft_isdigit(*line))
@@ -63,6 +66,14 @@ int			pars_camera_list(char *line, t_scene *scene)
 	scene->camera->fov = pars_one_colour(&line);
 	if (scene->camera->fov >= 180)
 		return (write(2, "Error\nwrong camera\n", 19));
+	if (scene->camera->orient.x != 0 || scene->camera->orient.z != 0) // запихнуть в тернарник
+		vect = (t_xyzpoint) {0, 1, 0};
+	else
+		vect = 	(t_xyzpoint) {1, 0, 0};
+	scene->camera->ox = normalize_vector(vector_mult(scene->camera->orient, \
+		vect)); // не умножали на длину экрана
+	scene->camera->oy = normalize_vector(vector_mult(scene->camera->ox, \
+		scene->camera->orient)); // и тут
 	return (0);
 }
 

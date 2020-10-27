@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/08 12:39:01 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/26 19:00:25 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/27 11:17:44 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,9 @@ t_xyzpoint	normalize_orient(t_xyzpoint xyz, t_xyzpoint orient, t_xyzpoint camera
 {
 	t_xyzpoint	new_orient;
 
-	if (scalar(substruct_vector(xyz, camera), orient) > 0)
-		new_orient = normalize_vector(mult_num_vect(orient, -1));
-	else if (scalar(substruct_vector(xyz, camera), orient) == 0)
+	if (scalar(substruct_vector(xyz, camera), orient) > 0.)
+		new_orient = normalize_vector(mult_num_vect(orient, -1.));
+	else if (scalar(substruct_vector(xyz, camera), orient) == 0.)
 		new_orient = normalize_orient_perp(xyz, orient, camera);
 	else
 		new_orient = normalize_vector(orient);
@@ -94,11 +94,11 @@ t_xyzpoint	normalize_orient_perp(t_xyzpoint xyz, t_xyzpoint orient, t_xyzpoint c
 	t_xyzpoint	vect_plus;
 	t_xyzpoint	vect_minus;
 
-	vect_plus = find_point_coordinates(xyz, orient, 1);
-	vect_minus = find_point_coordinates(xyz, orient, -1);
+	vect_plus = find_point_coordinates(xyz, orient, 1.);
+	vect_minus = find_point_coordinates(xyz, orient, -1.);
 	if (length_vector(substruct_vector(vect_plus, camera)) > \
 		length_vector(substruct_vector(vect_minus, camera)))
-		new_orient = normalize_vector(mult_num_vect(orient, -1));
+		new_orient = normalize_vector(mult_num_vect(orient, -1.));
 	else
 		new_orient = normalize_vector(orient);	
 	return (new_orient);

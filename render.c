@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/22 21:15:42 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/26 20:17:04 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/27 10:10:54 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void	*render(void *x)
 	t_mlx		*mlx;
 	t_scene		*scene;
 	
-	// scene = g_scene;
-	scene = g_scene_copy;
+	scene = g_scene;
+	// scene = g_scene_copy;
 	mlx = &g_mlx;
 	render_threads(scene, mlx, *(int*)x);
 	return (NULL);

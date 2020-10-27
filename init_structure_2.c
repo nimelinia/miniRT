@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:33:43 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/26 20:30:53 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/27 08:30:41 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ t_camera	*c_init(void)
 	camera = (t_camera*)malloc(sizeof(t_camera));
 	camera->center = init_center();
 	camera->orient = init_orient();
+	camera->ox = init_orient();
+	camera->oy = init_orient();
 	camera->fov = 0;
 	camera->count = count++;
 	camera->next = NULL;

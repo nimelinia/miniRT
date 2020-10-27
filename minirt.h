@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 20:14:22 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/26 20:32:42 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/27 10:03:28 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ typedef struct			s_camera
 	struct s_camera		*next;
 	t_xyzpoint			center;
 	t_xyzpoint			orient;
+	t_xyzpoint			ox;
+	t_xyzpoint			oy;
 	double				fov;
 	int					count;
 }						t_camera;
@@ -166,6 +168,24 @@ typedef struct 			s_matrix
 	t_xyzpoint			str_3;
 }						t_matrix;
 
+typedef struct 			s_file_header
+{
+	int					signature[2];
+	unsigned int		file_size;
+	unsigned int		reserved;
+	unsigned int		offset_to_pix;
+}						t_file_header;
+
+typedef struct 			s_bmp_header
+{
+	unsigned int		headersize;
+	unsigned int		weight;
+	unsigned int		hight;
+	int					bpp;
+	int					plane;
+	
+}						t_bmp_header;
+
 		
 
 t_sphere				*g_sphere;
@@ -235,6 +255,9 @@ double 					scalar(t_xyzpoint vector_1, t_xyzpoint vector_2);
 t_xyzpoint				vector_mult(t_xyzpoint vector_1, t_xyzpoint vector_2);
 double					length_vector(t_xyzpoint vector);
 t_xyzpoint				normalize_vector(t_xyzpoint vect);
+t_xyzpoint				vector_div(t_xyzpoint vect, double num);
+t_xyzpoint				mult_num_vect(t_xyzpoint vector, double num);
+t_xyzpoint				sum_vect(t_xyzpoint vect_1, t_xyzpoint vect_2);
 void					draw_sphere(t_scene *scene, t_mlx *mlx, int x, int i); //void *mlx_ptr, void *win_ptr);
 double					check_sphere(t_scene *scene, int x, int y, int i);
 t_xyzpoint				find_center_canvas(t_scene *scene, int x, int y);
@@ -297,14 +320,13 @@ double					check_shadows_triangle(t_triangle *current_tr, t_xyzpoint light, t_sc
 double					check_shadows_square(t_square *current_sq, t_xyzpoint light, t_scene *scene, t_index fig);
 double					check_shadows_cylin(t_cylin *current_cy, t_xyzpoint light, t_scene *scene, t_index fig);
 double					check_length_cylin(t_scene *scene, t_cylin *cylin, double length, t_xyzpoint light);
-t_xyzpoint				mult_num_vect(t_xyzpoint vector, double num);
 t_xyzpoint				normalize_orient(t_xyzpoint xyz, t_xyzpoint orient, t_xyzpoint camera);
 t_xyzpoint				normalize_orient_perp(t_xyzpoint xyz, t_xyzpoint orient, t_xyzpoint camera);
 t_xyzpoint				find_cylin_normal(t_cylin *cylin, t_xyzpoint camera, double t, t_xyzpoint ray);
 double					length_to_pl_point(t_xyzpoint start, t_xyzpoint normal, t_xyzpoint pl_point, t_xyzpoint vect);
 double					check_save(char *frase);
 void					free_points(t_scene *scene);
-void					copy_struct(t_scene *orig_scene);
+void					copy_struct(t_scene *copy_scene, t_scene *orig_scene);
 void 					copy_camera(t_scene *orig_scene, t_scene *scene_cp);
 void					copy_light(t_scene *orig_scene, t_scene *scene_cp);
 void					copy_sphere(t_scene *orig_scene, t_scene *scene_cp);
@@ -312,6 +334,8 @@ void					copy_plane(t_scene *orig_scene, t_scene *scene_cp);
 void					copy_triangle(t_scene *orig_scene, t_scene *scene_cp);
 void					copy_square(t_scene *orig_scene, t_scene *scene_cp);
 void					copy_cylin(t_scene *orig_scene, t_scene *scene_cp);
+void					put_image_bmp(t_scene *scene);
+t_xyzpoint				vector_div(t_xyzpoint vect, double num);
 
 // int     				find_min_x_sp(t_scene *scene);
 // int     				find_min_y_sp(t_scene *scene);

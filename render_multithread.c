@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/22 21:16:33 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/26 18:40:32 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/27 10:30:28 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	*render(void *x)
 	t_mlx		*mlx;
 	t_scene		*scene;
 	
-	scene = g_scene_copy; //copy_struct(g_scene); // тут по сути надо скопировать, а не приравнять
+	scene = g_scene; //copy_struct(g_scene); // тут по сути надо скопировать, а не приравнять
 	mlx = &g_mlx;
 	// scene->camera->orient = normalize_vector(scene->camera->orient);
 	// check_cam(scene); // меняются координаты и в g_scene - нужно сделать копию, а не приравнять указатели
