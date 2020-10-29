@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 20:14:22 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/27 10:03:28 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/28 21:22:50 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ typedef struct			s_scene
 	int					mistake;
 	double				**points;
 	double				save;
+	char				*scene_name;
 }						t_scene;
 
 typedef	struct 			s_mlx
@@ -170,21 +171,26 @@ typedef struct 			s_matrix
 
 typedef struct 			s_file_header
 {
-	int					signature[2];
-	unsigned int		file_size;
-	unsigned int		reserved;
-	unsigned int		offset_to_pix;
+	short				signature;
+	int					file_size;
+	int					reserved;
+	int					offset_to_pix;
 }						t_file_header;
 
-typedef struct 			s_bmp_header
+typedef struct 			s_bmp_info
 {
-	unsigned int		headersize;
-	unsigned int		weight;
-	unsigned int		hight;
-	int					bpp;
-	int					plane;
-	
-}						t_bmp_header;
+	int					headersize;
+	int					weight;
+	int					hight;
+	short				plane;
+	short				bpp;
+	int					compress;
+	int					imagesize;
+	int					bpmx;
+	int					bpmy;
+	int					colour;
+	int					colout_imp;
+}						t_bmp_info;
 
 		
 
@@ -336,6 +342,9 @@ void					copy_square(t_scene *orig_scene, t_scene *scene_cp);
 void					copy_cylin(t_scene *orig_scene, t_scene *scene_cp);
 void					put_image_bmp(t_scene *scene);
 t_xyzpoint				vector_div(t_xyzpoint vect, double num);
+void					put_image_bmp(t_scene *scene);
+void					fill_bmp(t_bmp_info bmpi, t_file_header header, char *name, t_scene *scene);
+int						fill_pixels(int	fd, int x, int y);
 
 // int     				find_min_x_sp(t_scene *scene);
 // int     				find_min_y_sp(t_scene *scene);

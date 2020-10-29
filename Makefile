@@ -6,7 +6,7 @@
 #    By: scopycat <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/08/13 20:15:44 by scopycat          #+#    #+#              #
-#    Updated: 2020/10/26 18:48:14 by scopycat         ###   ########.fr        #
+#    Updated: 2020/10/27 23:12:03 by scopycat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -75,7 +75,7 @@ bonus: $(OBJ) $(O_BONUS)
 	@make -C $(MLX)
 	@cp $(MLX)/libmlx.dylib .
 	ar -rc $(NAME) $(OBJ) $(O_BONUS)
-	gcc $(FUNC) $(BONUS) -L. -lminirt -L$(MLX) -lmlx $(FLAG) -I $(MLX) -I $(HEADER) -o miniRT 
+	gcc $(FUNC) $(BONUS) -L. -lminirt -L$(MLX) -lmlx $(FLAG) -O3 -I $(MLX) -I $(HEADER) -o miniRT 
 	ranlib $(NAME)
 
 

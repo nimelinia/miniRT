@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/26 18:47:49 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/26 18:53:13 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/28 13:27:25 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,7 @@ double			check_shadows_cylin(t_cylin *current_cy, t_xyzpoint light, t_scene *sce
 	{
 		if (fig.ind_fig != 5 || (fig.count - fig.ind_fig_n) != current_cy->count) //current_cy != scene->cylin)
 		{
+			// current_cy->orient = normalize_orient(current_cy->center, current_cy->orient, scene->camera->center);
 			length = check_cylin_wall(current_cy, normalize_vector(light), MAXFLOAT, tmp_l->center);
 			if (length < length_vector(light) && length)
 				return (1);

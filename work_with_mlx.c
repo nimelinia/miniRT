@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/13 21:14:12 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/27 12:22:43 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/28 22:48:57 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,35 @@
 #include "get_next_line.h"
 #include "minilibx_mms/mlx.h"
 #include <stdio.h>
+
+// void			*ft_memcpy(void *dest, const void *src, size_t n)
+// {
+// 	unsigned char *s1;
+// 	unsigned char *s2;
+
+// 	if (dest == src)
+// 		return (dest);
+// 	s1 = (unsigned char *)dest;
+// 	s2 = (unsigned char *)src;
+// 	while (n--)
+// 		*(s1++) = *(s2++);
+// 	return (dest);
+// }
+
+// void	ft_bzero(void *src, size_t num)
+// {
+// 	size_t			i;
+// 	unsigned char	*dest;
+
+// 	i = num;
+// 	dest = (unsigned char*)src;
+// 	while (i > 0)
+// 	{
+// 		i--;
+// 		dest[i] = 0;
+// 	}
+// 	src = dest;
+// }
 
 void	start_work(t_scene *scene)
 {
@@ -25,6 +54,8 @@ void	start_work(t_scene *scene)
 	// void	*image;
 	// int		x = 0;
 	// int		y = 0;
+	int 	size_x;
+	int		size_y;
 
 	g_mlx = init_mlx();
 	g_mlx.m_ptr = mlx_init();
@@ -41,21 +72,24 @@ void	start_work(t_scene *scene)
 	// 	x++;
 	// 	y = 0;
 	// }
+	mlx_get_screen_size(g_mlx.m_ptr, &size_x, &size_y);
+	if (scene->resol.x_size > size_x)
+		scene->resol.x_size = size_x;
+	if (scene->resol.y_size > size_y)
+		scene->resol.y_size = size_y;
 	g_mlx.img = mlx_new_image(g_mlx.m_ptr, scene->resol.x_size, scene->resol.y_size);
 	g_mlx.addr = mlx_get_data_addr(g_mlx.img, &g_mlx.bpp, &g_mlx.length, &g_mlx.end);
 	g_scene = scene;
 	g_camera = scene->camera;
 	prerender(scene, &g_mlx);
-	// g_mlx = mlx;
-	
 	if (g_mlx.w_ptr)
 	{
 		mlx_put_image_to_window(g_mlx.m_ptr, g_mlx.w_ptr, g_mlx.img, 0, 0);
 		mlx_hook(g_mlx.w_ptr, 17, 1L << 17, free_struct, scene);
 		mlx_hook(g_mlx.w_ptr, 2, 1L << 0, key_pressed, scene);
 	}
-	// else
-	// 	put_image_bmp(scene);
+	else if (scene->save)
+		put_image_bmp(scene);
 	
 	// else
 		// сохранение в bmp	и очистка
@@ -65,9 +99,71 @@ void	start_work(t_scene *scene)
 
 void	put_image_bmp(t_scene *scene)
 {
-	(void)scene;
+	char			*name;
+	t_file_header	header;
+	t_bmp_info		bmpi;
+
+	name = scene->scene_name;
+	name[ft_strlen(name) - 2] = '\0';
+	name = ft_strjoin_gnl(name, "bmp");
+	header.file_size = scene->resol.x_size * scene->resol.y_size * 4 + 54;
+	header.signature = 0x4D42; // BM
+	header.offset_to_pix = 54;
+	header.reserved = 0;
+	bmpi.headersize = 40;
+	bmpi.plane = 1;
+	bmpi.weight = scene->resol.x_size;
+	bmpi.hight = scene->resol.y_size;
+	bmpi.bpp = g_mlx.bpp;
+	bmpi.compress = 0;
+	bmpi.imagesize = scene->resol.x_size * scene->resol.y_size * 4;
+	bmpi.bpmx = 0;
+	bmpi.bpmy = 0;
+	bmpi.colour = 0;
+	bmpi.colout_imp = 0;
+	fill_bmp(bmpi, header, name, scene);
 }
 
+void	fill_bmp(t_bmp_info bmpi, t_file_header header, char *name, t_scene *scene)
+{
+	int	fd;
+	int i;
+
+	i = 0;
+	fd = open(name, O_WRONLY | O_TRUNC | O_CREAT, 0777);
+	i = write(fd, &header.signature, 2);
+	i += write(fd,  &header.file_size, 4);
+	i += write(fd, &header.reserved, 4);
+	i += write(fd, &header.offset_to_pix, 4);
+	i += write(fd, &bmpi.headersize, 4);
+	i += write(fd, &bmpi.weight, 4);
+	i += write(fd, &bmpi.hight, 4);
+	i += write(fd, &bmpi.plane, 2);
+	i += write(fd, &bmpi.bpp, 2);
+	i += write(fd, &bmpi.compress, 4);
+	i += write(fd, &bmpi.imagesize, 4);
+	i += write(fd, &bmpi.bpmx, 4);
+	i += write(fd, &bmpi.bpmy, 4);
+	i += write(fd, &bmpi.colour, 4);
+	i += write(fd, &bmpi.colout_imp, 4);
+	if (i != 54 || fill_pixels(fd, scene->resol.x_size, scene->resol.y_size) != bmpi.imagesize)
+		exit(free_struct(g_scene));
+	close(fd);
+	exit(free_struct(g_scene));
+}
+
+int		fill_pixels(int	fd, int x, int y)
+{
+	int				i;
+	unsigned char	*pic;
+	
+	pic = (unsigned char*)g_mlx.addr;
+	i = 0;
+	y = y - g_mlx.end;
+	while(--y >= 0)
+		i += write(fd, &pic[(g_mlx.length * y) + x * 4], x * 4);
+	return (i);
+}
 
 int		key_pressed(int	keycode, t_scene *scene)
 {
@@ -82,7 +178,7 @@ int		key_pressed(int	keycode, t_scene *scene)
 			return (0);
 		else
 			g_scene->camera = g_camera;
-		free_points(g_scene); // возможно не понадобится
+		free_points(g_scene);
 		mlx_destroy_image(g_mlx.m_ptr, g_mlx.img);
 		// mlx_clear_window(g_mlx.m_ptr, g_mlx.w_ptr);
 		g_mlx.img = mlx_new_image(g_mlx.m_ptr, scene->resol.x_size, scene->resol.y_size);

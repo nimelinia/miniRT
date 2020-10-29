@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:33:19 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/21 21:28:14 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/28 13:52:38 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void		init_scene(t_scene *scene)
 	scene->cylin = cy_init();
 	scene->triangle = t_init();
 	scene->mistake = 1;
+	scene->save = 0;
+	scene->scene_name = NULL;
 }
 
 t_mlx		init_mlx(void)

@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 19:20:04 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/25 17:43:56 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/28 14:00:10 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,10 @@ int		minirt(int argc, char **argv)
 	t_init_points(&scene);
 	check_scene(&scene);
 	if (argc == 3 && !check_save(argv[2]))
+	{
 		scene.save = 1;
+		scene.scene_name = ft_strdup(argv[1]);
+	}
 	else
 		scene.save = 0;
 	if (scene.mistake)

@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/26 18:44:26 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/26 18:45:47 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/27 23:00:11 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ t_xyzpoint		find_cylin_point(t_scene *scene, t_index fig, t_xyzpoint canvas)
 	tmp_cy = scene->cylin;
 	while (i--)
 		tmp_cy = tmp_cy->next;
-	if (fig.t == check_cylin_wall(tmp_cy, normalize_vector(substruct_vector(canvas, scene->camera->center)), MAXFLOAT, scene->camera->center))
+	if (fig.t == check_cylin_wall(tmp_cy, canvas, MAXFLOAT, scene->camera->center))
+	// if (fig.t == check_cylin_wall(tmp_cy, normalize_vector(substruct_vector(canvas, scene->camera->center)), MAXFLOAT, scene->camera->center))
 		point = tmp_cy->normal;
 	else
 		point = tmp_cy->orient;

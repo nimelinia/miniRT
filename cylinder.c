@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/08 11:15:51 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/26 19:00:12 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/27 22:58:56 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ void	draw_cylin(t_scene *scene, t_mlx *mlx, int x, int i) //void *mlx_ptr, void 
 				colour = convert_colour(tmp_cy->colour, \
 					find_colour_2(scene, x, y, cy)); // тут пока без света - только рассеянный и без теней
 				my_mlx_pixel_put(mlx, x, y, colour);
-				// mlx_pixel_put(mlx_ptr, win_ptr, x, y, colour); //convert_colour(scene->sphere->colour, light));
 				scene->points[x][y] = cy.t;
 			}
 			y++;
@@ -63,9 +62,10 @@ double	check_cylin(t_scene *scene, int x, int y, int i)
 		cy = cy->next;
 	canvas = find_center_canvas(scene, x, y);
 	ray = normalize_vector(substruct_vector(canvas, scene->camera->center));
-	cy->orient = normalize_orient(cy->center, cy->orient, scene->camera->center);
-	close_t = check_cylin_wall(cy, ray, MAXFLOAT, scene->camera->center);
-	if (close_t == MAXFLOAT || close_t == 0)
+	// cy->orient = normalize_orient(cy->center, cy->orient, scene->camera->center);
+	close_t = check_cylin_wall(cy, canvas, MAXFLOAT, scene->camera->center);
+	// close_t = check_cylin_wall(cy, ray, MAXFLOAT, scene->camera->center);
+	if (close_t == MAXFLOAT || close_t == 0.)
 		return (0);
 	return (close_t);
 }
@@ -82,13 +82,13 @@ double	check_cylin_wall(t_cylin *cylin, t_xyzpoint ray, double t, \
 	t2 = find_t2_cyl(start, cylin, ray);
 	t3 = find_t3_cyl(start, cylin, ray);
 	t4 = find_t4_cyl(start, cylin, ray);
-	if (t1 >= 1 && t1 < t)
+	if (t1 >= 1. && t1 < t)
 		t = t1;
-	if (t2 >= 1 && t2 < t)
+	if (t2 >= 1. && t2 < t)
 		t = t2;
-	if (t3 >= 1 && t3 < t)
+	if (t3 >= 1. && t3 < t)
 		t = t3;
-	if (t4 >= 1 && t4 < t)
+	if (t4 >= 1. && t4 < t)
 		t = t4;
 	if (t == t1 || t == t2)
 		cylin->normal = cylin->orient;
@@ -108,11 +108,11 @@ t_xyzpoint	find_cylin_normal(t_cylin *cylin, t_xyzpoint camera, double t, t_xyzp
 
 	point = find_point_coordinates(camera, ray, t);
 	gipot = substruct_vector(point, cylin->center);
-	lenght = sqrt(pow(length_vector(gipot), 2) - pow(cylin->diametr / 2,2));
-	if (scalar(cylin->orient, substruct_vector(point, cylin->center)) > 0)
+	lenght = sqrt(pow(length_vector(gipot), 2.) - pow(cylin->diametr / 2., 2.));
+	if (scalar(cylin->orient, substruct_vector(point, cylin->center)) > 0.)
 		normal = substruct_vector(point, find_point_coordinates(cylin->center, cylin->orient, lenght));
-	else if (scalar(cylin->orient, substruct_vector(point, cylin->center)) < 0)
-		normal = substruct_vector(point, find_point_coordinates(cylin->center, mult_num_vect(cylin->orient, -1), lenght));
+	else if (scalar(cylin->orient, substruct_vector(point, cylin->center)) < 0.)
+		normal = substruct_vector(point, find_point_coordinates(cylin->center, mult_num_vect(cylin->orient, -1.), lenght));
 	else
 		normal = substruct_vector(point, cylin->center);
 	normal = normalize_vector(normal);

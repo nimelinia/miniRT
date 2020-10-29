@@ -6,7 +6,7 @@
 /*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:54:31 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/19 23:08:21 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/27 20:56:47 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int		pars_plane_list(char *line, t_scene *scene)
 	scene->plane->colour = pars_colour(&line, scene);
 	if (!scene->mistake)
 		return (write(2, "Error\nwrong plane\n", 18));
+	scene->plane->orient = normalize_vector(scene->plane->orient);
 	return (0);
 }
 
