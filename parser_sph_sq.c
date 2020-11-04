@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parser_sph_sq.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:56:58 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/19 23:09:54 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/11/03 12:20:52 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
-#include "libft/libft.h"
 #include "get_next_line.h"
 #include "minilibx_mms/mlx.h"
 

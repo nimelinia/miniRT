@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:42:55 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/19 23:07:02 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/11/03 12:20:21 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
-#include "libft/libft.h"
 #include "get_next_line.h"
 #include "minilibx_mms/mlx.h"
 
@@ -89,7 +88,7 @@ double		pars_double(double x, char **line)
 		(*line)++;
 	while (line && *line && **line && ft_isdigit(**line))
 	{
-		x = x + (**line - '0') / (10 * y);
+		x = x + (**line - '0') / (pow(10, y));
 		y++;
 		(*line)++;
 	}

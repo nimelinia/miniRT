@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_multithread.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/22 21:16:33 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/27 10:30:28 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/29 20:38:10 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	prerender(t_scene *scene, t_mlx *mlx)
 	pthread_t	thr_2;
 	pthread_t	thr_3;
 	pthread_t	thr_4;
-	
+
 	(void)scene;
 	(void)mlx;
 	x[0] = 0;
@@ -41,33 +41,31 @@ void	*render(void *x)
 {
 	t_mlx		*mlx;
 	t_scene		*scene;
-	
-	scene = g_scene; //copy_struct(g_scene); // тут по сути надо скопировать, а не приравнять
+
+	scene = g_scene;
 	mlx = &g_mlx;
-	// scene->camera->orient = normalize_vector(scene->camera->orient);
-	// check_cam(scene); // меняются координаты и в g_scene - нужно сделать копию, а не приравнять указатели
 	render_threads(scene, mlx, *(int*)x);
 	pthread_exit(NULL);
 	return (NULL);
 }
 
-void		render_threads(t_scene *scene, t_mlx *mlx, int x)
+void	render_threads(t_scene *scene, t_mlx *mlx, int x)
 {
 	int			i;
 	int			count;
 
 	i = 0;
 	count = scene->sphere->count;
-	while (count--) // tmp_sphere) // переделать на переключение камер
-		draw_sphere(scene, mlx, x, i++); // mlx_ptr, win_ptr);
+	while (count--)
+		draw_sphere(scene, mlx, x, i++);
 	i = 0;
 	count = scene->plane->count;
-	while (count--) //tmp_plane)
-		draw_plane(scene, mlx, x, i++); //mlx_ptr, win_ptr);
+	while (count--)
+		draw_plane(scene, mlx, x, i++);
 	i = 0;
 	count = scene->triangle->count;
-	while (count--) //tmp_triangle)
-		draw_triangle(scene, mlx, x, i++); //mlx_ptr, win_ptr);
+	while (count--)
+		draw_triangle(scene, mlx, x, i++);
 	i = 0;
 	count = scene->square->count;
 	while (count--)
@@ -76,4 +74,28 @@ void		render_threads(t_scene *scene, t_mlx *mlx, int x)
 	count = scene->cylin->count;
 	while (count--)
 		draw_cylin(scene, mlx, x, i++);
+	fill_ambient(scene, mlx, x);
+}
+
+void	fill_ambient(t_scene *scene, t_mlx *mlx, int x)
+{
+	int		y;
+	int		colour;
+
+	y = 0;
+	while (x < scene->resol.x_size)
+	{
+		while (y < scene->resol.y_size)
+		{
+			if (scene->points[x][y] == MAXFLOAT)
+			{
+				colour = convert_colour_ambi(scene->ambi.colour, \
+					scene->ambi.racio);
+				my_mlx_pixel_put(mlx, x, y, colour);
+			}
+			y++;
+		}
+		x += 4;
+		y = 0;
+	}
 }

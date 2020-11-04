@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 20:14:22 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/28 21:22:50 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/11/03 15:23:33 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include <sys/uio.h>
 # include <stdlib.h>
 # include <pthread.h>
-# include <stdio.h> // убрать потом
 # include <errno.h>
 # include <math.h>
 # include <limits.h>
@@ -27,8 +26,8 @@
 typedef struct			s_index
 {
 	double				t;
-	int					ind_fig;
-	int					ind_fig_n;
+	int					i_f;
+	int					i_f_n;
 	int					ind_l_n;
 	int					count;
 }						t_index;
@@ -109,6 +108,14 @@ typedef struct			s_square
 	int					count;
 }						t_square;
 
+typedef	struct			s_angles
+{
+	t_xyzpoint			a;
+	t_xyzpoint			b;
+	t_xyzpoint			c;
+	t_xyzpoint			d;
+}						t_angles;
+
 typedef struct			s_cylin
 {
 	struct s_cylin		*next;
@@ -149,9 +156,8 @@ typedef struct			s_scene
 	char				*scene_name;
 }						t_scene;
 
-typedef	struct 			s_mlx
+typedef	struct			s_mlx
 {
-	// struct s_mlx		*next;
 	void				*m_ptr;
 	void				*w_ptr;
 	void				*img;
@@ -159,17 +165,16 @@ typedef	struct 			s_mlx
 	int					bpp;
 	int					length;
 	int					end;
-	// int					count;
 }						t_mlx;
 
-typedef struct 			s_matrix
+typedef struct			s_matrix
 {
 	t_xyzpoint			str_1;
 	t_xyzpoint			str_2;
 	t_xyzpoint			str_3;
 }						t_matrix;
 
-typedef struct 			s_file_header
+typedef struct			s_file_header
 {
 	short				signature;
 	int					file_size;
@@ -177,7 +182,7 @@ typedef struct 			s_file_header
 	int					offset_to_pix;
 }						t_file_header;
 
-typedef struct 			s_bmp_info
+typedef struct			s_bmp_info
 {
 	int					headersize;
 	int					weight;
@@ -192,17 +197,12 @@ typedef struct 			s_bmp_info
 	int					colout_imp;
 }						t_bmp_info;
 
-		
-
-t_sphere				*g_sphere;
-t_plane					*g_plane;
-t_triangle				*g_triangle;
-t_square				*g_square;
-t_cylin					*g_cylin;
 t_scene					*g_scene;
 t_scene					*g_scene_copy;
 t_camera				*g_camera;
 t_mlx					g_mlx;
+t_xyzpoint				g_ox;
+t_xyzpoint				g_oy;
 
 int						minirt(int argc, char **argv);
 void					parser(t_scene *scene, int fd);
@@ -244,27 +244,42 @@ t_xyzpoint				init_center(void);
 t_mlx					init_mlx(void);
 void					t_init_points(t_scene *scene);
 void					start_work(t_scene *scene);
-// int						convert_colour(t_colour colour, double racio);
+void					check_resol(t_scene *scene);
 void					prerender(t_scene *scene, t_mlx *mlx);
 void					*render(void *x);
 void					render_threads(t_scene *scene, t_mlx *mlx, int x);
-// void					render(t_scene *scene, t_mlx *mlx);
-// void					render(t_scene *scene, void *mlx_ptr, void *win_ptr);
+void					fill_ambient(t_scene *scene, t_mlx *mlx, int x);
 void					my_mlx_pixel_put(t_mlx *mlx, int x, int y, int colour);
+void					redraw_pic(t_scene *scene);
 int						key_pressed(int key_code, t_scene *scene);
-int						sph_ray_intersect(t_scene *scene);
-// void					draw_sphere(t_scene *scene, void *mlx_ptr, void *win_ptr);
+int						mouse_pressed(t_scene *scene);
+void					change_colours(t_scene *scene, int keycode);
+void					change_colours_figures(t_scene *scene, int keycode);
+void					change_colours_sphere(t_scene *scene, int keycode);
+void					change_colours_plane(t_scene *scene, int keycode);
+void					change_colours_triangle(t_scene *scene, int keycode);
+void					change_colours_square(t_scene *scene, int keycode);
+void					change_colours_cylin(t_scene *scene, int keycode);
+void					rotate_cam(t_scene *scene);
 int						free_struct(t_scene *scene);
-int						ft_isdigit(int sym);
-int						free_struct(t_scene *scene);
-double 					scalar(t_xyzpoint vector_1, t_xyzpoint vector_2);
+void					free_camera(t_scene *scene);
+void					free_light(t_scene *scene);
+void					free_sphere(t_scene *scene);
+void					free_plane(t_scene *scene);
+void					free_triangle(t_scene *scene);
+void					free_square(t_scene *scene);
+void					free_cylin(t_scene *scene);
+void					free_points(t_scene *scene);
+double					scalar(t_xyzpoint vector_1, t_xyzpoint vector_2);
 t_xyzpoint				vector_mult(t_xyzpoint vector_1, t_xyzpoint vector_2);
 double					length_vector(t_xyzpoint vector);
 t_xyzpoint				normalize_vector(t_xyzpoint vect);
 t_xyzpoint				vector_div(t_xyzpoint vect, double num);
 t_xyzpoint				mult_num_vect(t_xyzpoint vector, double num);
 t_xyzpoint				sum_vect(t_xyzpoint vect_1, t_xyzpoint vect_2);
-void					draw_sphere(t_scene *scene, t_mlx *mlx, int x, int i); //void *mlx_ptr, void *win_ptr);
+void					draw_sphere(t_scene *scene, t_mlx *mlx, int x, int i);
+void					draw_sphere_util(t_scene *scene, t_mlx *mlx, int x, \
+							t_index sp);
 double					check_sphere(t_scene *scene, int x, int y, int i);
 t_xyzpoint				find_center_canvas(t_scene *scene, int x, int y);
 double					find_first_t(t_scene *scene, t_xyzpoint canvas, int i);
@@ -274,6 +289,7 @@ double					check_light(t_scene *scene, int x, int y, t_index sp);
 t_xyzpoint				substruct_vector(t_xyzpoint vect_1, t_xyzpoint vect_2);
 t_colour				find_colour(t_scene *scene, int x, int y, t_index sp);
 int						convert_colour(t_colour colour, t_colour intens);
+int						convert_colour_ambi(t_colour colour, double racio);
 double					check_shadows(t_xyzpoint light, t_scene *scene);
 void					check_cam(t_scene *scene);
 void					change_coordinates_all(t_scene *scene, t_matrix matrix);
@@ -285,70 +301,89 @@ void					change_triangle_coor(t_scene *scene, t_matrix matrix);
 void					change_square_coor(t_scene *scene, t_matrix matrix);
 void					change_cylin_coor(t_scene *scene, t_matrix matrix);
 t_xyzpoint				mult_point_matrix(t_xyzpoint point, t_matrix matrix);
-// double					find_shadow_t1(t_xyzpoint light, t_xyzpoint ray, t_sphere close_sp);
-// double					find_shadow_t2(t_xyzpoint light, t_xyzpoint ray, t_sphere close_sp);
-// t_xyzpoint				find_point(t_scene *scene, t_sphere *close_sp);
-// t_xyzpoint				find_light_point_sp(t_sphere close_sp, t_scene *scene);
-void					draw_plane(t_scene *scene, t_mlx *mlx, int x, int i); //void *mlx_ptr, void *win_ptr);
+void					draw_plane(t_scene *scene, t_mlx *mlx, int x, int i);
+void					draw_plane_util(t_scene *scene, t_mlx *mlx, int x, \
+							t_index pl);
 double					check_plane(t_scene *scene, int x, int y, int i);
-t_colour				find_colour_2(t_scene *scene, int x, int y, t_index fig);
-double					check_light_2(t_scene *scene, int x, int y, t_index fig);
+t_colour				find_colour_2(t_scene *scene, int x, int y, \
+							t_index fig);
+double					check_light_2(t_scene *scene, int x, int y, \
+							t_index fig);
 double					check_shadows_2(t_xyzpoint light, t_scene *scene);
-void					draw_triangle(t_scene *scene, t_mlx *mlx, int x, int i); //void *mlx_ptr, void *win_ptr);
+void					draw_triangle(t_scene *scene, t_mlx *mlx, int x, int i);
+void					draw_triangle_util(t_scene *scene, t_mlx *mlx, int x, \
+							t_index tr);
+double					find_t_triangle(t_scene *scene, t_xyzpoint canvas, \
+							t_triangle *tr, t_xyzpoint normal);
 double					check_triangle(t_scene *scene, int x, int y, int i);
-int						check_inside_triangle(t_xyzpoint cam, t_triangle *triangle, t_xyzpoint ray, double t);
-void					draw_square(t_scene *scene, t_mlx *mlx, int x, int i); //void *mlx_ptr, void *win_ptr);
+int						check_inside_triangle(t_xyzpoint cam, \
+							t_triangle *triangle, t_xyzpoint ray, double t);
+void					draw_square(t_scene *scene, t_mlx *mlx, int x, int i);
+void					draw_square_util(t_scene *scene, t_mlx *mlx, int x, \
+							t_index sq);
 double					check_square(t_scene *scene, int x, int y, int i);
-// int						check_inside_square(t_scene *scene, t_xyzpoint ray, double t);
-int						check_inside_square(t_xyzpoint cam, t_square *square, t_xyzpoint ray, double t);
-void					draw_cylin(t_scene *scene, t_mlx *mlx, int x, int i); //void *mlx_ptr, void *win_ptr);
+int						check_inside_square(t_xyzpoint cam, t_square *square, \
+							t_xyzpoint ray, double t);
+t_xyzpoint				find_first_angle(t_square *square);
+void					draw_cylin(t_scene *scene, t_mlx *mlx, int x, int i);
+void					draw_cylin_util(t_scene *scene, t_mlx *mlx, int x, \
+							t_index cy);
 double					check_cylin(t_scene *scene, int x, int y, int i);
-double					check_cylin_wall(t_cylin *cylin, t_xyzpoint ray, double t, t_xyzpoint start);
-// double					check_cylin_wall(t_scene *scene, t_xyzpoint ray, double t, t_xyzpoint canvas);
-double					find_t1_cyl(t_xyzpoint start, t_cylin *cylin, t_xyzpoint ray);
-double					find_t2_cyl(t_xyzpoint start, t_cylin *cylin, t_xyzpoint ray);
-double					find_t3_cyl(t_xyzpoint start, t_cylin *cylin, t_xyzpoint ray);
-double					find_t4_cyl(t_xyzpoint start, t_cylin *cylin, t_xyzpoint ray);
-t_xyzpoint				find_point_coordinates(t_xyzpoint cntr, t_xyzpoint orient, double s);
+double					check_cylin_wall(t_cylin *cylin, t_xyzpoint ray, \
+							double t, t_xyzpoint start);
+double					find_t1_cyl(t_xyzpoint start, t_cylin *cylin, \
+							t_xyzpoint ray);
+double					find_t2_cyl(t_xyzpoint start, t_cylin *cylin, \
+							t_xyzpoint ray);
+double					find_t3_cyl(t_xyzpoint start, t_cylin *cylin, \
+							t_xyzpoint ray);
+double					find_t4_cyl(t_xyzpoint start, t_cylin *cylin, \
+							t_xyzpoint ray);
+t_xyzpoint				find_point_coordinates(t_xyzpoint cntr, \
+							t_xyzpoint orient, double s);
 double					find_k_1_3(t_xyzpoint vect, t_xyzpoint orient);
-double					find_k_2(t_xyzpoint vect_1, t_xyzpoint vect_2, t_xyzpoint orient);
-t_xyzpoint				find_figure_center(t_scene *scene, t_index fig, t_xyzpoint canvas);
+double					find_k_2(t_xyzpoint vect_1, t_xyzpoint vect_2, \
+							t_xyzpoint orient);
+t_xyzpoint				find_figure_center(t_scene *scene, t_index fig, \
+							t_xyzpoint canvas);
 t_xyzpoint				find_sphere_point(t_scene *scene, t_index fig);
 t_xyzpoint				find_plane_point(t_scene *scene, t_index fig);
 t_xyzpoint				find_triangle_point(t_scene *scene, t_index fig);
 t_xyzpoint				find_square_point(t_scene *scene, t_index fig);
-t_xyzpoint				find_cylin_point(t_scene *scene, t_index fig, t_xyzpoint canvas);
-// t_xyzpoint				find_cylin_normal(t_scene *scene, double *t, t_xyzpoint canvas);
-double					check_shadows_all(t_xyzpoint light, t_scene *scene, t_index fig);
-double					check_shadows_sphere(t_sphere *current_sp, t_xyzpoint light, t_scene *scene, t_index fig);
-double					check_shadows_plane(t_plane *current_pl, t_xyzpoint light, t_scene *scene, t_index fig);
-double					check_shadows_triangle(t_triangle *current_tr, t_xyzpoint light, t_scene *scene, t_index fig);
-double					check_shadows_square(t_square *current_sq, t_xyzpoint light, t_scene *scene, t_index fig);
-double					check_shadows_cylin(t_cylin *current_cy, t_xyzpoint light, t_scene *scene, t_index fig);
-double					check_length_cylin(t_scene *scene, t_cylin *cylin, double length, t_xyzpoint light);
-t_xyzpoint				normalize_orient(t_xyzpoint xyz, t_xyzpoint orient, t_xyzpoint camera);
-t_xyzpoint				normalize_orient_perp(t_xyzpoint xyz, t_xyzpoint orient, t_xyzpoint camera);
-t_xyzpoint				find_cylin_normal(t_cylin *cylin, t_xyzpoint camera, double t, t_xyzpoint ray);
-double					length_to_pl_point(t_xyzpoint start, t_xyzpoint normal, t_xyzpoint pl_point, t_xyzpoint vect);
+t_xyzpoint				find_cylin_point(t_scene *scene, t_index fig, \
+							t_xyzpoint canvas);
+double					check_shadows_all(t_xyzpoint light, t_scene *scene, \
+							t_index fig);
+double					check_shadows_sphere(t_sphere *current_sp, \
+						t_xyzpoint light, t_scene *scene, t_index fig);
+double					check_shadows_plane(t_plane *current_pl, \
+							t_xyzpoint light, t_scene *scene, t_index fig);
+double					check_shadows_triangle(t_triangle *current_tr, \
+							t_xyzpoint light, t_scene *scene, t_index fig);
+double					check_shadows_square(t_square *current_sq, \
+							t_xyzpoint light, t_scene *scene, t_index fig);
+double					check_shadows_cylin(t_cylin *current_cy, \
+							t_xyzpoint light, t_scene *scene, t_index fig);
+double					check_length_cylin(t_scene *scene, t_cylin *cylin, \
+							double length, t_xyzpoint light);
+t_xyzpoint				normalize_orient(t_xyzpoint xyz, t_xyzpoint orient, \
+							t_xyzpoint camera);
+t_xyzpoint				normalize_orient_perp(t_xyzpoint xyz, \
+							t_xyzpoint orient, t_xyzpoint camera);
+t_xyzpoint				find_cylin_normal(t_cylin *cylin, t_xyzpoint camera, \
+							double t, t_xyzpoint ray);
+double					length_to_pl_point(t_xyzpoint start, t_xyzpoint \
+							normal, t_xyzpoint pl_point, t_xyzpoint vect);
 double					check_save(char *frase);
-void					free_points(t_scene *scene);
-void					copy_struct(t_scene *copy_scene, t_scene *orig_scene);
-void 					copy_camera(t_scene *orig_scene, t_scene *scene_cp);
-void					copy_light(t_scene *orig_scene, t_scene *scene_cp);
-void					copy_sphere(t_scene *orig_scene, t_scene *scene_cp);
-void					copy_plane(t_scene *orig_scene, t_scene *scene_cp);
-void					copy_triangle(t_scene *orig_scene, t_scene *scene_cp);
-void					copy_square(t_scene *orig_scene, t_scene *scene_cp);
-void					copy_cylin(t_scene *orig_scene, t_scene *scene_cp);
+void					reinit_points(t_scene *scene);
 void					put_image_bmp(t_scene *scene);
 t_xyzpoint				vector_div(t_xyzpoint vect, double num);
 void					put_image_bmp(t_scene *scene);
-void					fill_bmp(t_bmp_info bmpi, t_file_header header, char *name, t_scene *scene);
+void					fill_bmp(t_bmp_info bmpi, t_file_header header, \
+							char *name, t_scene *scene);
 int						fill_pixels(int	fd, int x, int y);
-
-// int     				find_min_x_sp(t_scene *scene);
-// int     				find_min_y_sp(t_scene *scene);
-// int     				find_max_x_sp(t_scene *scene);
-// int     				find_max_y_sp(t_scene *scene);
+int						ft_strncmp(const char *str1, const char *str2, \
+							size_t len);
+int						ft_isdigit(int sym);
 
 #endif

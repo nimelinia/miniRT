@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   init_structure_1.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:33:19 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/28 13:52:38 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/11/03 12:19:29 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
-#include "libft/libft.h"
 #include "get_next_line.h"
 #include "minilibx_mms/mlx.h"
 
@@ -33,11 +32,8 @@ void		init_scene(t_scene *scene)
 
 t_mlx		init_mlx(void)
 {
-	// t_mlx	*mlx;
 	t_mlx	mlx;
-	// static int	count = 0;
 
-	// mlx = (t_mlx*)malloc(sizeof(t_mlx));
 	mlx.m_ptr = NULL;
 	mlx.w_ptr = NULL;
 	mlx.img = NULL;
@@ -45,11 +41,9 @@ t_mlx		init_mlx(void)
 	mlx.bpp = 0;
 	mlx.length = 0;
 	mlx.end = 0;
-	// mlx->count = count++;
-	// mlx->next = NULL;
 	return (mlx);
-	
 }
+
 t_xyzpoint	init_center(void)
 {
 	t_xyzpoint center;

@@ -3,17 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   colour.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/26 18:32:13 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/26 18:38:23 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/29 21:01:43 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 #include "minilibx_mms/mlx.h"
 
-int		convert_colour(t_colour colour, t_colour intens)
+int			convert_colour_ambi(t_colour colour, double racio)
+{
+	int		rgb;
+
+	rgb = ((int)(colour.r_colour * racio) << 16) | ((int)(colour.g_colour * \
+		racio) << 8) | ((int)(colour.b_colour * racio) << 0);
+	return (rgb);
+}
+
+int			convert_colour(t_colour colour, t_colour intens)
 {
 	int		rgb;
 
@@ -25,8 +34,9 @@ int		convert_colour(t_colour colour, t_colour intens)
 	if (colour.g_colour > 255)
 		colour.g_colour = 255;
 	if (colour.b_colour > 255)
-		colour.b_colour = 255;	
-	rgb = ((int)(colour.r_colour)<<16) | ((int)(colour.g_colour)<<8) | ((int)(colour.b_colour)<<0);
+		colour.b_colour = 255;
+	rgb = ((int)(colour.r_colour) << 16) | ((int)(colour.g_colour) << 8) \
+	| ((int)(colour.b_colour) << 0);
 	return (rgb);
 }
 
@@ -35,7 +45,7 @@ t_colour	find_colour(t_scene *scene, int x, int y, t_index sp)
 	double		light;
 	t_light		*new_l;
 	t_colour	intens;
-	
+
 	new_l = scene->light;
 	intens = init_colour();
 	while (new_l)
@@ -58,7 +68,7 @@ t_colour	find_colour_2(t_scene *scene, int x, int y, t_index fig)
 	double		light;
 	t_light		*new_l;
 	t_colour	intens;
-	
+
 	new_l = scene->light;
 	intens = init_colour();
 	while (new_l)

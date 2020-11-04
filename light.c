@@ -3,23 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   light.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/26 18:32:02 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/26 18:47:27 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/30 13:46:22 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 #include "minilibx_mms/mlx.h"
 
-
-double	check_light(t_scene *scene, int x, int y, t_index sp)
+double		check_light(t_scene *scene, int x, int y, t_index sp)
 {
 	t_xyzpoint	point;
-	t_xyzpoint	figure_point;
 	t_xyzpoint	normal;
-	t_xyzpoint	light;
 	double		res;
 	int			i;
 	t_light		*tmp_l;
@@ -29,24 +26,23 @@ double	check_light(t_scene *scene, int x, int y, t_index sp)
 	while (i--)
 		tmp_l = tmp_l->next;
 	res = 0.0;
-	figure_point = find_figure_center(scene, sp, find_center_canvas(scene, x, y));
-	point = find_point_coordinates(scene->camera->center, find_center_canvas(scene, x, y), sp.t);
-	normal = substruct_vector(point, figure_point);
-	normal = normalize_vector(normal);
-	light = substruct_vector(tmp_l->center, point);
-	light = normalize_vector(light);
-	if (scalar(normal, light) > 0)
-		res = (tmp_l->racio * scalar(normal, light));
+	point = find_point_coordinates(scene->camera->center, \
+		find_center_canvas(scene, x, y), sp.t);
+	normal = normalize_vector(substruct_vector(point, find_figure_center(\
+		scene, sp, find_center_canvas(scene, x, y))));
+	if (scalar(normal, normalize_vector(substruct_vector(tmp_l->center, \
+			point))) > 0)
+		res = (tmp_l->racio * scalar(normal, normalize_vector(\
+			substruct_vector(tmp_l->center, point))));
 	if (check_shadows_all(substruct_vector(tmp_l->center, point), scene, sp))
 		res = 0.0;
 	return (res);
 }
 
-double	check_light_2(t_scene *scene, int x, int y, t_index fig)
+double		check_light_2(t_scene *scene, int x, int y, t_index fig)
 {
 	t_xyzpoint	point;
 	t_xyzpoint	figure_normal;
-	t_xyzpoint	light;
 	double		res;
 	int			i;
 	t_light		*tmp_l;
@@ -56,39 +52,41 @@ double	check_light_2(t_scene *scene, int x, int y, t_index fig)
 	while (i--)
 		tmp_l = tmp_l->next;
 	res = 0.0;
-	figure_normal = find_figure_center(scene, fig, find_center_canvas(scene, x, y));
-	point = find_point_coordinates(scene->camera->center, find_center_canvas(scene, x, y), fig.t); //точка на плоскости
-	light = substruct_vector(tmp_l->center, point);
-	light = normalize_vector(light);
-	if (scalar(figure_normal, light) > 0)
-		res = (tmp_l->racio * scalar(figure_normal, light));
+	figure_normal = find_figure_center(scene, fig, \
+		find_center_canvas(scene, x, y));
+	point = find_point_coordinates(scene->camera->center, \
+		find_center_canvas(scene, x, y), fig.t);
+	if (scalar(figure_normal, normalize_vector(substruct_vector(tmp_l->center,\
+			point))) > 0)
+		res = (tmp_l->racio * scalar(figure_normal, normalize_vector(\
+			substruct_vector(tmp_l->center, point))));
 	if (check_shadows_all(substruct_vector(tmp_l->center, point), scene, fig))
 		res = 0.0;
 	return (res);
 }
 
-t_xyzpoint		find_figure_center(t_scene *scene, t_index fig, t_xyzpoint canvas)
+t_xyzpoint	find_figure_center(t_scene *scene, t_index fig, t_xyzpoint canvas)
 {
 	t_xyzpoint	point;
-	
+
 	point.x = 0;
 	point.y = 0;
 	point.z = 0;
-	if (fig.ind_fig == 1)
+	if (fig.i_f == 1)
 		return (find_sphere_point(scene, fig));
-	else if (fig.ind_fig == 2)
+	else if (fig.i_f == 2)
 		return (find_plane_point(scene, fig));
-	else if (fig.ind_fig == 3)
+	else if (fig.i_f == 3)
 		return (find_triangle_point(scene, fig));
-	else if (fig.ind_fig == 4)
+	else if (fig.i_f == 4)
 		return (find_square_point(scene, fig));
-	else if (fig.ind_fig == 5)
-		return (find_cylin_point(scene, fig, canvas));	
+	else if (fig.i_f == 5)
+		return (find_cylin_point(scene, fig, canvas));
 	else
 		return (point);
 }
 
-double			check_shadows_all(t_xyzpoint light, t_scene *scene, t_index fig)
+double		check_shadows_all(t_xyzpoint light, t_scene *scene, t_index fig)
 {
 	t_sphere	*current_sp;
 	t_plane		*current_pl;

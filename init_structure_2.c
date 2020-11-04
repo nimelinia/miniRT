@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   init_structure_2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:33:43 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/27 08:30:41 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/11/03 12:19:37 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
-#include "libft/libft.h"
 #include "get_next_line.h"
 #include "minilibx_mms/mlx.h"
 

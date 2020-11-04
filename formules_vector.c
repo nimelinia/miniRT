@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   formules_vector.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/08 12:07:44 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/16 22:09:51 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/11/03 12:19:15 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
-#include "libft/libft.h"
 #include "get_next_line.h"
 #include "minilibx_mms/mlx.h"
 

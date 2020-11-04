@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   square.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/13 18:15:43 by scopycat          #+#    #+#             */
-/*   Updated: 2020/11/02 21:42:17 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/11/03 12:53:22 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,20 +112,22 @@ int			check_inside_square(t_xyzpoint cam, t_square *square, \
 t_xyzpoint	find_first_angle(t_square *square)
 {
 	t_xyzpoint	vector;
+	t_xyzpoint	vec;
 	double		e;
 
+	vec = normalize_vector(square->orient);
 	e = (scalar(square->center, square->orient));
 	if (square->orient.x)
-		vector = (t_xyzpoint){e / square->orient.x, 0, 0};
+		vector = (t_xyzpoint){e / square->orient.x, 0., 0.};
 	else if (square->orient.y)
-		vector = (t_xyzpoint){0, e / square->orient.y, 0};
+		vector = (t_xyzpoint){0., e / square->orient.y, 0.};
 	else
-		vector = (t_xyzpoint){0, 0, e / square->orient.z};
-	if (e == 0)
+		vector = (t_xyzpoint){0., 0., e / square->orient.z};
+	if (e == 0.)
 	{
-		vector.x = square->orient.x == 0 ? 1 : square->orient.x;
-		vector.y = square->orient.y == 0 ? 1 : square->orient.y;
-		vector.z = square->orient.z == 0 ? 1 : square->orient.z;
+		vector.x = vec.x == 0. ? 1. : 0.;
+		vector.y = vec.y == 0. ? 1. : 0.;
+		vector.z = vec.z == 0. ? 1. : 0.;
 	}
 	vector = substruct_vector(square->center, vector);
 	vector = normalize_vector(vector);

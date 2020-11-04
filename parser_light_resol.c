@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parser_light_resol.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:52:27 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/27 20:28:37 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/11/03 12:21:00 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
-#include "libft/libft.h"
 #include "get_next_line.h"
 #include "minilibx_mms/mlx.h"
 
@@ -100,9 +99,5 @@ int		pars_resol(char *line, t_scene *scene)
 	if (scene->resol.x_size <= 0 || scene->resol.y_size <= 0)
 		return (write(2, "Error\nwrong resolution\n", 23));
 	scene->resol.count++;
-	// scene->resol.x_size = scene->resol.x_size > 1920 ? 1920 : \
-	// 	scene->resol.x_size;
-	// scene->resol.y_size = scene->resol.y_size > 1080 ? 1080 : \
-	// 	scene->resol.y_size;
 	return (0);
 }

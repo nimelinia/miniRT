@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parser_cylin_plane.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:54:31 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/27 20:56:47 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/11/03 12:21:06 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
-#include "libft/libft.h"
 #include "get_next_line.h"
 #include "minilibx_mms/mlx.h"
 

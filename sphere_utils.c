@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sphere_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scopycat <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: scopycat <scopycat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/08 12:19:34 by scopycat          #+#    #+#             */
-/*   Updated: 2020/10/20 13:28:04 by scopycat         ###   ########.fr       */
+/*   Updated: 2020/10/29 20:43:21 by scopycat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,10 @@
 
 double		find_first_t(t_scene *scene, t_xyzpoint canvas, int i)
 {
-	t_xyzpoint	ray;
-	// double		k1;
-	// double		k2;
-	// double		k3;
+	t_xyzpoint		ray;
 	t_xyzpoint		k;
 	t_sphere		*tmp_sp;
-	double		discriminant;
+	double			discriminant;
 
 	tmp_sp = scene->sphere;
 	while (i--)
@@ -39,13 +36,10 @@ double		find_first_t(t_scene *scene, t_xyzpoint canvas, int i)
 
 double		find_second_t(t_scene *scene, t_xyzpoint canvas, int i)
 {
-	t_xyzpoint	ray;
-	// double		k1;
-	// double		k2;
-	// double		k3;
+	t_xyzpoint		ray;
 	t_xyzpoint		k;
 	t_sphere		*tmp_sp;
-	double		discriminant;
+	double			discriminant;
 
 	tmp_sp = scene->sphere;
 	while (i--)
